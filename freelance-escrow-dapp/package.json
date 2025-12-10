@@ -1,0 +1,9 @@
+{
+  "name": "freelance-escrow-dapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "ISC",
+  "scripts": {
+    "migrate:reset": "truffle migrate --reset && node scripts/copy-artifacts.js"
+  }
+}
