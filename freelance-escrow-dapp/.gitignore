@@ -1,1 +1,23 @@
+# Ignoruoti visas node_modules direktorijas (ir šakninę, ir vidines)
+**/node_modules/
+
+# Build’ai ir generuoti failai
+/build/
+/dist/
+/coverage/
+
+# React / CRA papildomi build’ai
+/client/build/
+.client/
+.cache/
+
+# Logai
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Lokaliniai env failai
+.env
+.env.local
+.env.*.local
 
