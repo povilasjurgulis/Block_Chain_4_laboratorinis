@@ -173,6 +173,13 @@ body {
   word-break: break-all;
 }
 
+.account-note {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
 .not-connected {
   text-align: center;
   color: #6c757d;

@@ -287,13 +287,16 @@ function App() {
             <div className="connected-account">
               <span className="account-label">Connected Account:</span>
               <span className="account-address">{currentAccount}</span>
+              <p className="account-note">To switch accounts, use MetaMask extension</p>
             </div>
           ) : (
-            <p className="not-connected">No wallet connected</p>
+            <>
+              <p className="not-connected">No wallet connected</p>
+              <button className="btn btn-primary btn-large" onClick={connectWallet}>
+                Connect MetaMask Wallet
+              </button>
+            </>
           )}
-          <button className="btn btn-primary btn-large" onClick={connectWallet}>
-            {currentAccount ? "Switch Account" : "Connect MetaMask Wallet"}
-          </button>
         </div>
       </div>
 
