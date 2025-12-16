@@ -44,12 +44,17 @@ if (networkIds.length === 0) {
   throw new Error("FreelanceEscrow.json neturi jokių 'networks' – ar paleidai truffle migrate?");
 }
 
-// pasiimam DIDŽIAUSIĄ network id (paskutinį deploy)
-const latestNetworkId = networkIds
-  .map(Number)
-  .sort((a, b) => a - b)
-  .pop()
-  .toString();
+// Use network_id 1337 (Ganache chainId)
+let latestNetworkId = "1337";
+
+// If 1337 doesn't exist, fall back to the latest deployed network
+if (!networks[latestNetworkId]) {
+  latestNetworkId = networkIds
+    .map(Number)
+    .sort((a, b) => a - b)
+    .pop()
+    .toString();
+}
 
 const address = networks[latestNetworkId].address.toLowerCase();
 

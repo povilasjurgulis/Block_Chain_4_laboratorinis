@@ -1,10 +1,11 @@
 module.exports = {
-
   networks: {
     development: {
-    host: "127.0.0.1",     // Localhost (default: none)
-    port: 8545,            // Standard Ethereum port (default: none)
-    network_id: "*",       // Any network (default: none)
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: "1337",      // Match Ganache chainId
+      gas: 6721975,            // Gas limit
+      gasPrice: 20000000000,   // 20 gwei
     },
   },
 
@@ -16,14 +17,7 @@ module.exports = {
   // Configure compilers
   compilers: {
     solc: {
-      version: "0.8.21",      // Fetch exact version from solc-bin (default: truffle's version)
-    }
+      version: "0.8.20",
+    },
   },
-
-  compilers: {
-  solc: {
-    version: "0.8.20",
-  },
-},
-
 };

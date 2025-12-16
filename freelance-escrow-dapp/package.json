@@ -4,6 +4,8 @@
   "main": "index.js",
   "license": "ISC",
   "scripts": {
-    "migrate:reset": "truffle migrate --reset && node scripts/copy-artifacts.js"
+    "migrate:reset": "truffle migrate --reset --network development && node scripts/copy-artifacts.js",
+    "migrate": "truffle migrate --network development && node scripts/copy-artifacts.js",
+    "compile": "truffle compile"
   }
 }
