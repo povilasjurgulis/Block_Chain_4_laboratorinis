@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import FreelanceEscrowArtifact from "./contracts/FreelanceEscrow.json";
 import { NETWORK_ID, CONTRACT_ADDRESS } from "./escrowConfig";
-
+import "./App.css";
 
 function App() {
   const [currentAccount, setCurrentAccount] = useState(null);
@@ -246,96 +246,221 @@ function App() {
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: "40px auto", fontFamily: "sans-serif" }}>
-      <h1>Freelance Escrow DApp</h1>
+    <div className="app-container">
+      {/* Header */}
+      <header className="app-header">
+        <h1 className="app-title">Freelance Escrow DApp</h1>
+        <p className="app-subtitle">Decentralized Freelance Payment Platform</p>
+      </header>
 
-      <div style={{ 
-        padding: "10px", 
-        marginBottom: "20px", 
-        backgroundColor: isCorrectNetwork ? "#d4edda" : "#f8d7da",
-        border: `1px solid ${isCorrectNetwork ? "#c3e6cb" : "#f5c6cb"}`,
-        borderRadius: "5px"
-      }}>
-        <p style={{ margin: "5px 0" }}>
-          <strong>Tinklas:</strong> {chainId ? `Chain ID: ${parseInt(chainId, 16)}` : "Nežinomas"}
-          {isCorrectNetwork ? " " : " ❌ (Reikia 1337)"}
-        </p>
-        <p style={{ margin: "5px 0" }}>
-          <strong>Contract adresas:</strong> {CONTRACT_ADDRESS}
-        </p>
+      {/* Network Status Card */}
+      <div className={`network-card ${isCorrectNetwork ? "network-success" : "network-error"}`}>
+        <div className="network-header">
+          <h3>Network Status</h3>
+          <span className={`status-badge ${isCorrectNetwork ? "badge-success" : "badge-error"}`}>
+            {isCorrectNetwork ? "CONNECTED" : "WRONG NETWORK"}
+          </span>
+        </div>
+        <div className="network-info">
+          <div className="info-row">
+            <span className="info-label">Chain ID:</span>
+            <span className="info-value">{chainId ? parseInt(chainId, 16) : "Unknown"}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Expected Chain ID:</span>
+            <span className="info-value">1337 (Ganache Local)</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Contract Address:</span>
+            <span className="info-value contract-address">{CONTRACT_ADDRESS}</span>
+          </div>
+        </div>
       </div>
 
-      <p>
-        Prisijungusi paskyra:{" "}
-        {currentAccount ? (
-          <strong>{currentAccount}</strong>
-        ) : (
-          <em>neprisijungta</em>
-        )}
-      </p>
-      <button onClick={connectWallet}>Prisijungti per MetaMask</button>
+      {/* Account Connection Card */}
+      <div className="account-card">
+        <div className="account-header">
+          <h3>Account Connection</h3>
+        </div>
+        <div className="account-content">
+          {currentAccount ? (
+            <div className="connected-account">
+              <span className="account-label">Connected Account:</span>
+              <span className="account-address">{currentAccount}</span>
+            </div>
+          ) : (
+            <p className="not-connected">No wallet connected</p>
+          )}
+          <button className="btn btn-primary btn-large" onClick={connectWallet}>
+            {currentAccount ? "Switch Account" : "Connect MetaMask Wallet"}
+          </button>
+        </div>
+      </div>
 
-      <hr />
+      {/* Main Content Grid */}
+      <div className="cards-grid">
+        
+        {/* Client Card - Create Job */}
+        <div className="action-card card-client">
+          <div className="card-header">
+            <h2 className="card-title">Client Panel</h2>
+            <span className="role-badge badge-client">CLIENT</span>
+          </div>
+          <div className="card-body">
+            <p className="card-description">
+              Create a new escrow job by specifying the freelancer, arbitrator, and payment amount.
+            </p>
+            <form onSubmit={createJob} className="job-form">
+              <div className="form-group">
+                <label className="form-label">Freelancer Address *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={freelancer}
+                  onChange={(e) => setFreelancer(e.target.value)}
+                  placeholder="0x..."
+                  required
+                  pattern="0x[a-fA-F0-9]{40}"
+                  title="Valid Ethereum address required (0x...)"
+                />
+              </div>
 
-      <h2>1. Sukurti darbą (Client)</h2>
-      <form onSubmit={createJob}>
-        <div>
-          <label>Freelancer adresas:</label>
-          <input
-            type="text"
-            value={freelancer}
-            onChange={(e) => setFreelancer(e.target.value)}
-            style={{ width: "100%" }}
-          />
+              <div className="form-group">
+                <label className="form-label">Arbitrator Address *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={arbitrator}
+                  onChange={(e) => setArbitrator(e.target.value)}
+                  placeholder="0x..."
+                  required
+                  pattern="0x[a-fA-F0-9]{40}"
+                  title="Valid Ethereum address required (0x...)"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Payment Amount (ETH) *</label>
+                <input
+                  type="number"
+                  className="form-input"
+                  value={amountEth}
+                  onChange={(e) => setAmountEth(e.target.value)}
+                  placeholder="0.1"
+                  step="0.001"
+                  min="0.001"
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn btn-success btn-block">
+                Create Escrow Job
+              </button>
+            </form>
+          </div>
         </div>
 
-        <div>
-          <label>Arbitro adresas:</label>
-          <input
-            type="text"
-            value={arbitrator}
-            onChange={(e) => setArbitrator(e.target.value)}
-            style={{ width: "100%" }}
-          />
+        {/* Freelancer Card */}
+        <div className="action-card card-freelancer">
+          <div className="card-header">
+            <h2 className="card-title">Freelancer Panel</h2>
+            <span className="role-badge badge-freelancer">FREELANCER</span>
+          </div>
+          <div className="card-body">
+            <p className="card-description">
+              Accept assigned jobs and submit completed work for client approval.
+            </p>
+            
+            <div className="form-group">
+              <label className="form-label">Job ID *</label>
+              <input
+                type="number"
+                className="form-input"
+                value={jobId}
+                onChange={(e) => setJobId(e.target.value)}
+                placeholder="0"
+                min="0"
+                required
+              />
+            </div>
+
+            <div className="button-group">
+              <button 
+                className="btn btn-info btn-block" 
+                onClick={acceptJob}
+                disabled={!jobId}
+              >
+                Accept Job
+              </button>
+              <button 
+                className="btn btn-warning btn-block" 
+                onClick={submitWork}
+                disabled={!jobId}
+              >
+                Submit Work
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label>Suma (ETH):</label>
-          <input
-            type="text"
-            value={amountEth}
-            onChange={(e) => setAmountEth(e.target.value)}
-          />
+        {/* Client Approval Card */}
+        <div className="action-card card-arbiter">
+          <div className="card-header">
+            <h2 className="card-title">Client Approval</h2>
+            <span className="role-badge badge-arbiter">APPROVAL</span>
+          </div>
+          <div className="card-body">
+            <p className="card-description">
+              Review and approve completed work to release payment to the freelancer.
+            </p>
+            
+            <div className="form-group">
+              <label className="form-label">Job ID *</label>
+              <input
+                type="number"
+                className="form-input"
+                value={jobId}
+                onChange={(e) => setJobId(e.target.value)}
+                placeholder="0"
+                min="0"
+                required
+              />
+            </div>
+
+            <button 
+              className="btn btn-primary btn-block" 
+              onClick={approveWork}
+              disabled={!jobId}
+            >
+              Approve Work & Release Payment
+            </button>
+          </div>
         </div>
 
-        <button type="submit">Sukurti darbą</button>
-      </form>
-
-      <hr />
-
-      <h2>2. Darbo valdymas</h2>
-      <div>
-        <label>Job ID:</label>
-        <input
-          type="text"
-          value={jobId}
-          onChange={(e) => setJobId(e.target.value)}
-          style={{ width: "100px" }}
-        />
       </div>
 
-      <div style={{ marginTop: 10 }}>
-        <button onClick={acceptJob}>Freelancer: priimti darbą</button>
-      </div>
-      <div style={{ marginTop: 10 }}>
-        <button onClick={submitWork}>Freelancer: pateikti darbą</button>
-      </div>
-      <div style={{ marginTop: 10 }}>
-        <button onClick={approveWork}>Client: patvirtinti darbą</button>
-      </div>
+      {/* Status Card */}
+      {status && (
+        <div className={`status-card ${
+          status.includes("sukurtas") || status.includes("priimtas") || status.includes("pateiktas") || status.includes("patvirtintas") || status.includes("Prisijungta") 
+            ? "status-success" 
+            : status.includes("Klaida") || status.includes("atmesta") || status.includes("Nepavyko")
+            ? "status-error"
+            : "status-info"
+        }`}>
+          <div className="status-header">
+            <h3>Transaction Status</h3>
+          </div>
+          <div className="status-body">
+            <p className="status-message">{status}</p>
+          </div>
+        </div>
+      )}
 
-      <hr />
-      <p><strong>Statusas:</strong> {status}</p>
+      {/* Footer */}
+      <footer className="app-footer">
+        <p>Powered by Ethereum Smart Contracts | Truffle + Ganache + React</p>
+      </footer>
     </div>
   );
 }
