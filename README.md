@@ -81,15 +81,17 @@ Darbo būsena aprašoma išvardijimu (`enum JobStatus`):
 
 #### 5. Ginčas – `openDispute` ir `resolveDispute`
 
-1. Jei klientas nepatenkintas darbu, jis kviečia `openDispute(jobId)`.  
+1. Jei klientas arba freelanceris nepatenkintas darbu, jis kviečia `openDispute(jobId)`.  
    Būsena keičiama į `Disputed`, emituojamas įvykis `DisputeOpened`.
-2. Arbitras peržiūri situaciją „off-chain“ (per el. paštą, dokumentus, kodą ir t. t.).
-3. Arbitras kviečia `resolveDispute(jobId, releaseToFreelancer)`:
-   - jei `releaseToFreelancer = true`, lėšos išmokamos freelancer‘iui;
-   - jei `false`, lėšos grąžinamos klientui.
-4. Būsena tampa `Completed`, emituojamas `DisputeResolved`.
+2. Arbitras peržiūri situaciją „off-chain" (per el. paštą, dokumentus, kodą ir t. t.).
+3. Arbitras kviečia `resolveDispute(jobId, clientShare, freelancerShare)`:
+   - nurodo, kiek ETH turi būti grąžinta klientui (`clientShare`);
+   - nurodo, kiek ETH turi būti išmokėta freelancer'iui (`freelancerShare`);
+   - `clientShare + freelancerShare` turi būti lygus pradiniam `job.amount`.
+4. Smart kontraktas paskirsto lėšas pagal arbitro nurodytus dalimis.
+5. Būsena tampa `Completed`, emituojamas `DisputeResolved(jobId, clientShare, freelancerShare)`.
 
-**Verslo prasmė:** ginčo sprendimas patikėtas trečiajai šaliai, todėl nei klientas, nei freelanceris negali vienašališkai „pasisavinti“ lėšų.
+**Verslo prasmė:** ginčo sprendimas patikėtas trečiajai šaliai, o arbitras gali teisingai paskirstyti lėšas pagal darbo užbaigimo procentą (pvz., 30% klientui, 70% freelancer'iui), todėl nei klientas, nei freelanceris negali vienašališkai „pasisavinti" lėšų.
 
 #### 6. Atšaukimas – `cancelJob`
 
@@ -150,17 +152,26 @@ sukuria naują darbo įrašą (job) su būsena Created; saugo kliento, freelance
 
 - Šiame etape kontraktas turi dvi galimas šakas (alt blokas diagramoje).
 
-#### B1. Arbitratorius palaiko freelanceriо pusę
+#### B1. Arbitratorius nusprendžia paskirstymą
 
-- Arbitratorius iškviečia resolveDispute nurodydamas darbo ID ir laimėtojo adresą (freelancerį).
+- Arbitratorius iškviečia `resolveDispute` nurodydamas:
+  - darbo ID
+  - `clientShare` – suma ETH, kuri bus grąžinta klientui
+  - `freelancerShare` – suma ETH, kuri bus išmokėta freelancer'iui
 
-- Smart Contract: patikrina, kad kviečiantis adresas yra būtent nurodytas arbitratorius; patikrina, jog darbas yra Disputed būsenos; perveda escrow lėšas freelancer’iui; atnaujina darbo būseną į Completed arba Resolved; emituoja `PayoutReleased` įvykį (pinigai išmokėti freelanceriui pagal arbitro sprendimą).
+**Pavyzdžiai:**
+- Jei darbas atliktas 100%: `clientShare = 0 ETH`, `freelancerShare = [visa suma]`
+- Jei darbas atliktas 70%: `clientShare = 0.03 ETH`, `freelancerShare = 0.07 ETH` (jei pradinis job.amount = 0.1 ETH)
+- Jei darbas neatliktas: `clientShare = [visa suma]`, `freelancerShare = 0 ETH`
 
-#### B2. Arbitratorius palaiko kliento pusę
-
-- Alternatyvioje šakoje arbitratorius iškviečia `resolveDispute`, kaip laimėtoją nurodydamas klientą.
-
-- Smart Contract: patikrina arbitrą ir darbo būseną kaip ir ankstesnėje šakoje; grąžina escrow lėšas klientui (refund); atnaujina darbo būseną į Cancelled arba Resolved; emituoja `refund` (arba lygiavertį) įvykį, rodantį, kad lėšos sugrąžintos klientui.
+- Smart Contract: 
+  - patikrina, kad kviečiantis adresas yra būtent nurodytas arbitratorius;
+  - patikrina, jog darbas yra Disputed būsenos;
+  - patikrina, kad `clientShare + freelancerShare == job.amount`;
+  - perveda `clientShare` klientui (jei > 0);
+  - perveda `freelancerShare` freelancer'iui (jei > 0);
+  - atnaujina darbo būseną į Completed;
+  - emituoja `DisputeResolved(jobId, clientShare, freelancerShare)` įvykį.
 
 
 # Saugumo ir teisingumo užtikrinimas:
@@ -232,7 +243,8 @@ await web3.eth.sendTransaction({ from: accounts[0], to: "0x798970472694a42c47cb8
 ![alt text](freelance-escrow-dapp/images/image-20.png)
 - Patvirtinu, kad lėšos yra pervestos freelanceriui (Account 2)
 ![alt text](freelance-escrow-dapp/images/image-21.png)
-
+- Dar galima pradėti ginčą (bet tik Arbitras gali "resolve dispute)
+![alt text](image.png)
 # Išmaniosios sutarties veikimas Ethereum testiniame tinkle Sepolia:
 - Iš pat pradžių gavau testinių Sepolia ETH, kad galėčiau vykdyti transakcijas:
 ![alt text](freelance-escrow-dapp/images/SepoliaETH_gavimas.png)

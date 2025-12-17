@@ -16,6 +16,11 @@ function App() {
   const [jobId, setJobId] = useState("");
   const [status, setStatus] = useState("");
 
+  // Dispute state
+  const [disputeJobId, setDisputeJobId] = useState("");
+  const [clientShare, setClientShare] = useState("");
+  const [freelancerShare, setFreelancerShare] = useState("");
+
   const EXPECTED_CHAIN_ID = "0x539"; // 1337 in hex
 
   async function getContract() {
@@ -245,6 +250,73 @@ function App() {
     }
   }
 
+  async function handleOpenDispute() {
+    if (!isCorrectNetwork) {
+      setStatus(" Prašome perjungti į Ganache tinklą (Chain ID: 1337)");
+      return;
+    }
+    
+    if (!disputeJobId) {
+      setStatus(" Įveskite Job ID");
+      return;
+    }
+    
+    try {
+      const contract = await getContract();
+      setStatus("Keliamas ginčas...");
+      const tx = await contract.openDispute(Number(disputeJobId));
+      setStatus("Laukiama patvirtinimo...");
+      await tx.wait();
+      setStatus(" Ginčas atidarytas! Statusas: Disputed");
+    } catch (err) {
+      console.error(err);
+      if (err.code === "ACTION_REJECTED") {
+        setStatus("Transakcija atmesta");
+      } else {
+        setStatus("Klaida keliančio ginčą: " + (err.message || "Žiūrėk konsolę"));
+      }
+    }
+  }
+
+  async function handleResolveDispute(e) {
+    e.preventDefault();
+    
+    if (!isCorrectNetwork) {
+      setStatus(" Prašome perjungti į Ganache tinklą (Chain ID: 1337)");
+      return;
+    }
+    
+    if (!disputeJobId || !clientShare || !freelancerShare) {
+      setStatus(" Užpildykite visus laukus");
+      return;
+    }
+    
+    try {
+      const contract = await getContract();
+      setStatus("Arbitras sprendžia ginčą...");
+      
+      const clientShareWei = ethers.parseEther(clientShare.trim());
+      const freelancerShareWei = ethers.parseEther(freelancerShare.trim());
+      
+      const tx = await contract.resolveDispute(
+        Number(disputeJobId),
+        clientShareWei,
+        freelancerShareWei
+      );
+      
+      setStatus("Laukiama patvirtinimo...");
+      await tx.wait();
+      setStatus(` Ginčas išspręstas! Klientui: ${clientShare} ETH, Freelancer'iui: ${freelancerShare} ETH`);
+    } catch (err) {
+      console.error(err);
+      if (err.code === "ACTION_REJECTED") {
+        setStatus("Transakcija atmesta");
+      } else {
+        setStatus("Klaida sprendžiant ginčą: " + (err.message || "Žiūrėk konsolę"));
+      }
+    }
+  }
+
   return (
     <div className="app-container">
       {/* Header */}
@@ -437,6 +509,105 @@ function App() {
             >
               Approve Work & Release Payment
             </button>
+          </div>
+        </div>
+
+        {/* Dispute Resolution Card */}
+        <div className="action-card card-dispute">
+          <div className="card-header">
+            <h2 className="card-title">Dispute Resolution</h2>
+            <span className="role-badge badge-dispute">DISPUTE</span>
+          </div>
+          <div className="card-body">
+            <p className="card-description">
+              Open disputes or resolve them as an arbitrator by distributing funds.
+            </p>
+
+            {/* Open Dispute Section */}
+            <div className="dispute-section">
+              <h3 className="section-title">Open Dispute</h3>
+              <p className="section-note">Client or Freelancer can open a dispute on submitted work</p>
+              
+              <div className="form-group">
+                <label className="form-label">Job ID *</label>
+                <input
+                  type="number"
+                  className="form-input"
+                  value={disputeJobId}
+                  onChange={(e) => setDisputeJobId(e.target.value)}
+                  placeholder="0"
+                  min="0"
+                  required
+                />
+              </div>
+
+              <button 
+                className="btn btn-danger btn-block" 
+                onClick={handleOpenDispute}
+                disabled={!disputeJobId}
+              >
+                Open Dispute
+              </button>
+            </div>
+
+            <div className="divider"></div>
+
+            {/* Resolve Dispute Section */}
+            <div className="dispute-section">
+              <h3 className="section-title">Resolve Dispute (Arbitrator Only)</h3>
+              <p className="section-note">Distribute funds between client and freelancer</p>
+              
+              <form onSubmit={handleResolveDispute}>
+                <div className="form-group">
+                  <label className="form-label">Job ID *</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={disputeJobId}
+                    onChange={(e) => setDisputeJobId(e.target.value)}
+                    placeholder="0"
+                    min="0"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Client Share (ETH) *</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={clientShare}
+                    onChange={(e) => setClientShare(e.target.value)}
+                    placeholder="0.05"
+                    step="0.001"
+                    min="0"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Freelancer Share (ETH) *</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={freelancerShare}
+                    onChange={(e) => setFreelancerShare(e.target.value)}
+                    placeholder="0.05"
+                    step="0.001"
+                    min="0"
+                    required
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className="btn btn-primary btn-block"
+                  disabled={!disputeJobId || !clientShare || !freelancerShare}
+                >
+                  Resolve Dispute
+                </button>
+              </form>
+            </div>
           </div>
         </div>
 
