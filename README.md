@@ -243,8 +243,8 @@ await web3.eth.sendTransaction({ from: accounts[0], to: "0x798970472694a42c47cb8
 ![alt text](freelance-escrow-dapp/images/image-20.png)
 - Patvirtinu, kad lėšos yra pervestos freelanceriui (Account 2)
 ![alt text](freelance-escrow-dapp/images/image-21.png)
-- Dar galima pradėti ginčą (bet tik Arbitras gali "resolve dispute)
-![alt text](image.png)
+- Dar galima pradėti ginčą (bet tik Arbitras gali "resolve dispute")
+![alt text](freelance-escrow-dapp/images/image-22.png)
 # Išmaniosios sutarties veikimas Ethereum testiniame tinkle Sepolia:
 - Iš pat pradžių gavau testinių Sepolia ETH, kad galėčiau vykdyti transakcijas:
 ![alt text](freelance-escrow-dapp/images/SepoliaETH_gavimas.png)
