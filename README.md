@@ -175,6 +175,64 @@ sukuria naują darbo įrašą (job) su būsena Created; saugo kliento, freelance
 - Sėkmingo scenarijaus atveju užtenka trijų pagrindinių veiksmų: createJob -> acceptJob -> submitWork -> approveWork.
 - Jei kyla ginčas, naudojami papildomi veiksmai: openDispute ir resolveDispute, o galutinį sprendimą dėl biudžeto paskirstymo priima arbitratorius.
 
+# Išmaniosios sutarties veikimas Ethereum lokaliame tinkle:
+
+- Paležiu Ganache - į powershell terminalą rašau 
+ganache --port 8545 --chain.networkId 1337 --chain.chainId 1337
+![alt text](freelance-escrow-dapp/images/image.png)
+- Į naują (antrą) terminalą rašau
+cd c:\Users\povil\Desktop\Block_Chain\4_laboratorinis_block_chain\freelance-escrow-dapp
+
+truffle migrate --reset --network development
+
+node scripts/copy-artifacts.js
+
+![alt text](freelance-escrow-dapp/images/image-1.png)
+![alt text](freelance-escrow-dapp/images/image-2.png)
+- Įjungiu frontend'ą - Į dar naujesnį (trečią) terminalą rašau 
+cd c:\Users\povil\Desktop\Block_Chain\4_laboratorinis_block_chain\freelance-escrow-dapp\client
+
+npm start
+![alt text](freelance-escrow-dapp/images/image-3.png)
+- Atsidaro React app
+![alt text](freelance-escrow-dapp/images/image-4.png)
+- Per MetaMask prisijungiu į Ganache Localhost
+![alt text](freelance-escrow-dapp/images/image-5.png)
+- Kol kas mano visi accounts turi 0 ETH todėl reikės papildyti
+![alt text](freelance-escrow-dapp/images/image-6.png)
+- Antrame terminale papildau Clientui ir Account 2 (freelanceriui) ETH. 
+Tai darau rašydamas
+cd C:\Users\povil\Desktop\Block_Chain\4_laboratorinis_block_chain\freelance-escrow-dapp
+truffle console
+
+let accounts = await web3.eth.getAccounts()
+accounts
+
+await web3.eth.sendTransaction({ from: accounts[0], to: "0x8d81c1bd3317d74595eaf7cb0725f897127163ef", value: web3.utils.toWei("15", "ether")})
+
+await web3.eth.sendTransaction({ from: accounts[0], to: "0x798970472694a42c47cb81eef2504d286d0871ce", value: web3.utils.toWei("10", "ether")})
+![alt text](freelance-escrow-dapp/images/image-7.png)
+![alt text](freelance-escrow-dapp/images/image-8.png)
+![alt text](freelance-escrow-dapp/images/image-9.png)
+![alt text](freelance-escrow-dapp/images/image-10.png)
+![alt text](freelance-escrow-dapp/images/image-11.png)
+- Kol esu prisijungęs su "Client" account per MetaMask, rašau Freelancer Address ir Arbitrator address (bet koks galimas adresas iš MetaMask), kad galėčiau "create escrow job"
+![alt text](freelance-escrow-dapp/images/image-12.png)
+- Spaudžiu "create escrow job" ir per MetaMask patvirtinu (confirm)
+![alt text](freelance-escrow-dapp/images/image-13.png)
+![alt text](freelance-escrow-dapp/images/image-14.png)
+- Persijungiu į Account 2 (Freelancer account) ir spaudžiu "Accept Job"
+![alt text](freelance-escrow-dapp/images/image-15.png)
+![alt text](freelance-escrow-dapp/images/image-16.png)
+- Spaudžiu "Sumbit Work" (vis dar su Freelancer account)
+![alt text](freelance-escrow-dapp/images/image-17.png)
+![alt text](freelance-escrow-dapp/images/image-18.png)
+- Persijungiu į "Client" account ir spaudžiu "Approve Work & Release Payment"
+![alt text](freelance-escrow-dapp/images/image-19.png)
+![alt text](freelance-escrow-dapp/images/image-20.png)
+- Patvirtinu, kad lėšos yra pervestos freelanceriui (Account 2)
+![alt text](freelance-escrow-dapp/images/image-21.png)
+
 # Išmaniosios sutarties veikimas Ethereum testiniame tinkle Sepolia:
 - Iš pat pradžių gavau testinių Sepolia ETH, kad galėčiau vykdyti transakcijas:
 ![alt text](freelance-escrow-dapp/images/SepoliaETH_gavimas.png)
