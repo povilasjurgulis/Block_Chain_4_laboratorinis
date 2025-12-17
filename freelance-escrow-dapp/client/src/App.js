@@ -167,7 +167,7 @@ function App() {
     } catch (err) {
       console.error(err);
       if (err.code === "INSUFFICIENT_FUNDS") {
-        setStatus("❌ Nepakanka lėšų. Patikrinkite, ar paskyra turi pakankamai ETH.");
+        setStatus(" Nepakanka lėšų. Patikrinkite, ar paskyra turi pakankamai ETH.");
       } else if (err.code === "ACTION_REJECTED") {
         setStatus("Transakcija atmesta");
       } else {

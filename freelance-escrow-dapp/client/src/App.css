@@ -1,4 +1,4 @@
-/* ===== Global Styles ===== */
+/*  Global Styles  */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -22,7 +22,7 @@ body {
   padding: 20px;
 }
 
-/* ===== Header ===== */
+/*  Header  */
 .app-header {
   text-align: center;
   margin-bottom: 40px;
@@ -42,7 +42,7 @@ body {
   font-weight: 300;
 }
 
-/* ===== Network Status Card ===== */
+/*  Network Status Card */
 .network-card {
   background: white;
   border-radius: 12px;
@@ -123,7 +123,7 @@ body {
   word-break: break-all;
 }
 
-/* ===== Account Card ===== */
+/*  Account Card  */
 .account-card {
   background: white;
   border-radius: 12px;
@@ -187,7 +187,7 @@ body {
   font-style: italic;
 }
 
-/* ===== Cards Grid ===== */
+/*  Cards Grid  */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -277,7 +277,7 @@ body {
   font-size: 0.95rem;
 }
 
-/* ===== Forms ===== */
+/*  Forms  */
 .job-form {
   display: flex;
   flex-direction: column;
@@ -324,7 +324,7 @@ body {
   border-color: #28a745;
 }
 
-/* ===== Buttons ===== */
+/*  Buttons  */
 .btn {
   padding: 12px 24px;
   border: none;
@@ -401,7 +401,7 @@ body {
   gap: 12px;
 }
 
-/* ===== Status Card ===== */
+/*  Status Card  */
 .status-card {
   background: white;
   border-radius: 12px;
@@ -450,7 +450,7 @@ body {
   font-weight: 500;
 }
 
-/* ===== Footer ===== */
+/*  Footer */
 .app-footer {
   text-align: center;
   padding: 30px 20px;
@@ -459,7 +459,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* ===== Responsive Design ===== */
+/*  Responsive Design  */
 @media (max-width: 768px) {
   .app-title {
     font-size: 2rem;

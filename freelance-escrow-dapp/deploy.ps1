@@ -1,9 +1,9 @@
 # Deploy Freelance Escrow DApp
 # This script handles the full deployment process
 
-Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "------------" -ForegroundColor Cyan
 Write-Host "Freelance Escrow DApp - Deployment" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "------------" -ForegroundColor Cyan
 Write-Host ""
 
 # Check if Ganache is running
@@ -11,7 +11,7 @@ Write-Host "1. Checking Ganache connection..." -ForegroundColor Yellow
 $ganacheTest = Test-NetConnection -ComputerName 127.0.0.1 -Port 8545 -WarningAction SilentlyContinue
 
 if (-not $ganacheTest.TcpTestSucceeded) {
-    Write-Host "   ❌ ERROR: Ganache is not running on port 8545!" -ForegroundColor Red
+    Write-Host "    ERROR: Ganache is not running on port 8545!" -ForegroundColor Red
     Write-Host ""
     Write-Host "   Please start Ganache with:" -ForegroundColor Yellow
     Write-Host "   ganache --port 8545 --chain.networkId 1337 --chain.chainId 1337" -ForegroundColor White
@@ -28,7 +28,7 @@ if (Test-Path ".\build") {
     Remove-Item -Recurse -Force .\build
     Write-Host "    Build directory cleaned" -ForegroundColor Green
 } else {
-    Write-Host "   ℹ️ No previous build found" -ForegroundColor Gray
+    Write-Host "    No previous build found" -ForegroundColor Gray
 }
 Write-Host ""
 
@@ -36,7 +36,7 @@ Write-Host ""
 Write-Host "3. Compiling smart contracts..." -ForegroundColor Yellow
 truffle compile
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "   ❌ Compilation failed!" -ForegroundColor Red
+    Write-Host "    Compilation failed!" -ForegroundColor Red
     exit 1
 }
 Write-Host "    Compilation successful" -ForegroundColor Green
@@ -46,7 +46,7 @@ Write-Host ""
 Write-Host "4. Deploying to Ganache (network: development)..." -ForegroundColor Yellow
 truffle migrate --reset --network development
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "   ❌ Migration failed!" -ForegroundColor Red
+    Write-Host "    Migration failed!" -ForegroundColor Red
     exit 1
 }
 Write-Host "    Migration successful" -ForegroundColor Green
@@ -56,7 +56,7 @@ Write-Host ""
 Write-Host "5. Copying artifacts to client..." -ForegroundColor Yellow
 node scripts/copy-artifacts.js
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "   ❌ Artifact copy failed!" -ForegroundColor Red
+    Write-Host "    Artifact copy failed!" -ForegroundColor Red
     exit 1
 }
 Write-Host "    Artifacts copied" -ForegroundColor Green
@@ -83,17 +83,17 @@ if (Test-Path ".\client\src\contracts\FreelanceEscrow.json") {
             Write-Host "    Contract deployed at: $address" -ForegroundColor Green
         }
     } else {
-        Write-Host "   ❌ Config file missing!" -ForegroundColor Red
+        Write-Host "    Config file missing!" -ForegroundColor Red
     }
 } else {
-    Write-Host "   ❌ Contract artifact missing!" -ForegroundColor Red
+    Write-Host "    Contract artifact missing!" -ForegroundColor Red
 }
 Write-Host ""
 
 # Success message
-Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "------------" -ForegroundColor Cyan
 Write-Host " DEPLOYMENT COMPLETE!" -ForegroundColor Green
-Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "------------" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Yellow
 Write-Host "1. cd client" -ForegroundColor White
@@ -105,4 +105,4 @@ Write-Host "- RPC URL: http://127.0.0.1:8545" -ForegroundColor White
 Write-Host "- Chain ID: 1337" -ForegroundColor White
 Write-Host "- Import a Ganache account private key" -ForegroundColor White
 Write-Host ""
-Write-Host "Happy testing! 🚀" -ForegroundColor Cyan
+Write-Host "Happy testing! " -ForegroundColor Cyan
