@@ -1,5 +1,7 @@
 # Povilo Jurgulio Blokų Grandinių Technologijų 4 laboratorinis darbas
 
+# Verslo modelis ir logika:
+
 ## Verslo modelio idėja
 
 Šis projektas įgyvendina **freelance eskrovo** (angl. *freelance escrow*) verslo modelį.  
@@ -96,7 +98,7 @@ Darbo būsena aprašoma išvardijimu (`enum JobStatus`):
 
 **Verslo prasmė:** apsauga nuo „užstrigusių“ darbų, kai freelanceris nepriima užsakymo.
 
-# Verslo modelio šalių tarpusavio sąveikos sekų diagrama (sequence diagram)
+# Verslo modelio šalių tarpusavio sąveikos sekų diagrama (sequence diagram):
 
 ![alt text](freelance-escrow-dapp/images/Sequence_diagram_Verslo_Modelio_ETH.drawio.png)
 
@@ -161,14 +163,30 @@ sukuria naują darbo įrašą (job) su būsena Created; saugo kliento, freelance
 - Smart Contract: patikrina arbitrą ir darbo būseną kaip ir ankstesnėje šakoje; grąžina escrow lėšas klientui (refund); atnaujina darbo būseną į Cancelled arba Resolved; emituoja `refund` (arba lygiavertį) įvykį, rodantį, kad lėšos sugrąžintos klientui.
 
 
-# Saugumo ir teisingumo užtikrinimas
+# Saugumo ir teisingumo užtikrinimas:
 
 - Naudojami **modifieriai** (`onlyClient`, `onlyFreelancer`, `onlyArbitrator`, `inStatus`), kurie užtikrina, kad:
   - kiekvieną funkciją gali kviesti tik jam priklausanti šalis,
   - operacijos atliekamos tik teisingoje būsenos sekoje (pvz., negalima patvirtinti darbo, kuris dar nebuvo pateiktas).
 - Visi svarbūs veiksmai emituoja **event’us** (`JobCreated`, `JobAccepted`, `WorkSubmitted`, `JobCompleted`, `DisputeOpened`, `DisputeResolved`).
 
-# Verslo modelio santrauka
+# Verslo modelio santrauka:
 - Visi mokėjimai visą laiką laikomi Smart Contract escrow’e – nei klientas, nei freelanceris negali jų vienašališkai pasisavinti.
 - Sėkmingo scenarijaus atveju užtenka trijų pagrindinių veiksmų: createJob -> acceptJob -> submitWork -> approveWork.
 - Jei kyla ginčas, naudojami papildomi veiksmai: openDispute ir resolveDispute, o galutinį sprendimą dėl biudžeto paskirstymo priima arbitratorius.
+
+# Išmaniosios sutarties veikimas Ethereum testiniame tinkle Sepolia:
+- Iš pat pradžių gavau testinių Sepolia ETH, kad galėčiau vykdyti transakcijas:
+![alt text](freelance-escrow-dapp/images/SepoliaETH_gavimas.png)
+- "Contract deployed" į Sepolia, naudojant Remix IDE:
+![alt text](freelance-escrow-dapp/images/Contract_Deployed.png)
+
+ ### Išmaniosios sutarties vykdymo log'ai (ir overview) per Etherscan
+
+- Žemiau pateikiamas
+`JobCreated` įvykio (event) log'as iš Etherscan:
+![alt text](freelance-escrow-dapp/images/Etherscan_logs.png)
+- Transaction overview (Create Job):
+![alt text](freelance-escrow-dapp/images/Ethescan_Overview.png)
+- Sutarties adresas Etherscan’e:
+![alt text](freelance-escrow-dapp/images/Etherscan_Contract.png)
