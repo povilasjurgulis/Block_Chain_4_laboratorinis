@@ -1,5 +1,11 @@
 # Povilo Jurgulio Blokų Grandinių Technologijų 4 laboratorinis darbas
 
+#### Trumpas aprašymas
+Šiame laboratoriniame darbe sukūriau išmaniąją sutartį (smart contract), kuri įgyvendina freelance escrow verslo logiką ir užtikrina saugų bei patikimą atsiskaitymą decentralizuotame „Ethereum“ tinkle.
+Išmaniosios sutarties valdymui ir verslo proceso dalyvių tarpusavio sąveikai sukūriau decentralizuotą app (dApp) su „React“ pagrįstu Front-End.
+Išmanioji sutartis parašyta Solidity kalba ir testuota naudojant Ganache, Truffle ir MetaMask įrankius (lokaliai ir „Sepolia“ testiniame tinkle). Labiausiai reikėjo ChatGPT pagalbos Front-End realizuoti ir klaidas taisyti, bet daug ką pats susigaudžiau.
+
+
 # Verslo modelis ir logika:
 
 ## Verslo modelio idėja
